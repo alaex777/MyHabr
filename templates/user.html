@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>User</title>
+</head>
+<body>
+	<h1>Hello, {{user.username}}!</h1>
+	<p>Your list of Articles:</p>
+	{% for i in articles %}
+		<p>Name: {{i.name}}</p>
+		<p>Category: {{i.category}}</p>
+		<p>Date added: {{i.date_added}}</p>
+		<br>
+	{% endfor %}
+</body>
+</html>
