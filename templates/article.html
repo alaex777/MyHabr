@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Article {{article.name}}</title>
+</head>
+<body>
+	<div class="navbar-nav" style="float:right;">
+      <a class="nav-item nav-link" href="/login">Login</a>
+      <a class="nav-item nav-link" href="/register">Register</a>
+    </div>
+	<h1>{{article.name}}</h1>
+	<span>By {{article.author.username}}</span>
+	<span align="right">Posted on {{article.date_added}}</span>
+	<p>{{article.content}}</p>
+	{% if user.category == "Write comments" or user.category == "Write articles" %}
+		<h1>Add Comment</h1>
+		<form method="POST" class="post-form">
+			{% csrf_token %}
+			{{form.as_p}}
+		<input type="submit" name="Submit", value="Add">
+	</form>
+	{% endif %}
+	{% if comments is not None %}
+		<h1>Comments: </h1>
+		{% for i in comments %}
+			<p>{{i.content}}</p>
+			<p>{{i.author.username}}</p>
+			<p>{{i.time_added}}</p>
+		{% endfor %}
+	{% endif %}
+</body>
+</html>

@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import ModelForm
-from .models import User, Article 
+from .models import User, Article, Comment 
 
 class Login(forms.Form):
 	username = forms.CharField(max_length=32)
@@ -15,3 +15,8 @@ class CreateArticle(ModelForm):
 	class Meta:
 		model = Article
 		fields = ("name", "category", "content",)
+
+class CreateComment(ModelForm):
+	class Meta:
+		model = Comment
+		fields = ("content",)

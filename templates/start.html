@@ -5,9 +5,13 @@
 	<title>{{name}}</title>
 </head>
 <body>
+	<div class="navbar-nav" style="float:right;">
+      <a class="nav-item nav-link" href="/login">Login</a>
+      <a class="nav-item nav-link" href="/register">Register</a>
+    </div>
 	<h1>Articles: </h1>
 	{% for i in query %}
-	<span><h2>{{i.name}}</h2></span>
+	<span><h2><a class="nav-item nav-link" href="/article/{{i.id}}/user/{{id}}">{{i.name}}</a></h2></span>
 	<span>Category: {{i.category}}</span>
 	<p></p>
 	<span>Posted by {{i.author.username}} </span>
