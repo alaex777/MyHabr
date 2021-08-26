@@ -13,6 +13,17 @@
 	<span>By {{article.author.username}}</span>
 	<span align="right">Posted on {{article.date_added}}</span>
 	<p>{{article.content}}</p>
+	{% if article.author == user %}
+		<span>
+			<a href="/delete/article/{{article.id}}/user/{{user.id}}">Delete</a>
+			<a href="/edit/article/{{article.id}}/user/{{user.id}}">Edit</a>
+		</span>
+	{% endif %}
+	<h1>Do you like this article?</h1>
+	<span>
+		<a href="/like/article/{{article.id}}/user/{{user.id}}">Like</a>
+		<a href="/dislike/article/{{article.id}}/user/{{user.id}}">Dislike</a>
+	</span>
 	{% if user.category == "Write comments" or user.category == "Write articles" %}
 		<h1>Add Comment</h1>
 		<form method="POST" class="post-form">
@@ -27,6 +38,18 @@
 			<p>{{i.content}}</p>
 			<p>{{i.author.username}}</p>
 			<p>{{i.time_added}}</p>
+			{% if i.author.id == user.id %}
+				<span>
+					<a href="/delete/comment/{{i.id}}/article/{{article.id}}/user/{{user.id}}">Delete</a>
+					<a href="/edit/comment/{{i.id}}/article/{{article.id}}/user/{{user.id}}">Edit</a>
+				</span>
+			{% endif %}
+			<br>
+			<span>
+				<a href="/like/comment/{{i.id}}/article/{{article.id}}/user/{{user.id}}">Like</a>
+				<a href="/dislike/comment/{{i.id}}/article/{{article.id}}/user/{{user.id}}">Dislike</a>
+			</span>
+			<hr>
 		{% endfor %}
 	{% endif %}
 </body>

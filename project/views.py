@@ -58,7 +58,7 @@ def create_article(request, id):
 	form = CreateArticle(request.POST)
 	if request.method == "POST":
 		if form.is_valid():
-			user = User.objaects.get(pk=id)
+			user = User.objects.get(pk=id)
 			article = Article(author=user, 
 				content=str(form.cleaned_data["content"]), 
 				category=str(form.cleaned_data["category"]), 
@@ -82,5 +82,82 @@ def article(request, id, pk):
 			comment.save()
 			return redirect("/article/"+str(id)+"/user/"+str(pk))
 	return render(request, "article.html", context={"article": article, "comments": comments, "user": user, "form": form})
+
+def like_article(request, id_ar, id_us):
+	article = Article.objects.get(id=id_ar)
+	author = article.author
+	if author != "Deleted user":
+		author.rating += 10
+		author.save()
+	address = "/article/" + str(id_ar) + "/user/" + str(id_us)
+	return redirect(address)
+
+def dislike_article(request, id_ar, id_us):
+	article = Article.objects.get(id=id_ar)
+	author = article.author
+	if author != "Deleted user":
+		author.rating -= 10
+		author.save()
+	address = "/article/" + str(id_ar) + "/user/" + str(id_us)
+	return redirect(address)
+
+def like_comment(request, id_com, id_ar, id_us):
+	comment = Comment.objects.get(id=id_com)
+	author = comment.author
+	if author != "Deleted user":
+		author.rating += 3
+		author.save()
+	address = "/article/" + str(id_ar) + "/user/" + str(id_us)
+	return redirect(address)
+
+def dislike_comment(request, id_com, id_ar, id_us):
+	comment = Comment.objects.get(id=id_com)
+	author = comment.author
+	if author != "Deleted user":
+		author.rating -= 3
+		author.save()
+	address = "/article/" + str(id_ar) + "/user/" + str(id_us)
+	return redirect(address)
+
+def edit_comment(request, id_com, id_ar, id_us):
+	comment = Comment.objects.get(id=id_com)
+	article = Article.objects.get(id=id_ar)
+	user = User.objects.get(id=id_us)
+	form = CreateComment(request.POST)
+	if request.method == "POST":
+		if form.is_valid():
+			comment.content = str(form.cleaned_data["content"])
+			comment.save()
+			address = "/article/" + str(id_ar) + "/user/" + str(id_us)
+			return redirect(address)
+	return render(request, "edit_comment.html", context={"form": form, "comment": comment, "article": article, "user": user})
+
+def delete_comment(request, id_com, id_ar, id_us):
+	comment = Comment.objects.get(id=id_com)
+	comment.delete()
+	address = "/article/" + str(id_ar) + "/user/" + str(id_us)
+	return redirect(address)
+
+def edit_article(request, id_ar, id_us):
+	article = Article.objects.get(id=id_ar)
+	user = User.objects.get(id=id_us)
+	form = CreateArticle(request.POST)
+	if request.method == "POST":
+		if form.is_valid():
+			article.name = str(form.cleaned_data["name"])
+			article.content = str(form.cleaned_data["content"])
+			article.category = str(form.cleaned_data["category"])
+			article.save()
+			address = "/article/" + str(id_ar) + "/user/" + str(id_us)
+			return redirect(address)
+	return render(request, "edit_article.html", context={"form": form, "article": article, "user": user})
+
+def delete_article(request, id_ar, id_us):
+	article = Article.objects.get(id=id_ar)
+	article.delete()
+	address = "/article/" + str(id_ar) + "/user/" + str(id_us)
+	return redirect(address)
+
+
 
 
