@@ -5,6 +5,7 @@
 	<title>Article {{article.name}}</title>
 </head>
 <body>
+	{% load static %}
 	<div class="navbar-nav" style="float:right;">
       <a class="nav-item nav-link" href="/login">Login</a>
       <a class="nav-item nav-link" href="/register">Register</a>
@@ -15,14 +16,22 @@
 	<p>{{article.content}}</p>
 	{% if article.author == user %}
 		<span>
-			<a href="/delete/article/{{article.id}}/user/{{user.id}}">Delete</a>
-			<a href="/edit/article/{{article.id}}/user/{{user.id}}">Edit</a>
+			<a href="/delete/article/{{article.id}}/user/{{user.id}}">
+				<img src="{% static 'delete.png' %}" width="16" height="16">
+			</a>
+			<a href="/edit/article/{{article.id}}/user/{{user.id}}">
+				<img src="{% static 'edit.png' %}" width="16" height="16">
+			</a>
 		</span>
 	{% endif %}
 	<h1>Do you like this article?</h1>
 	<span>
-		<a href="/like/article/{{article.id}}/user/{{user.id}}">Like</a>
-		<a href="/dislike/article/{{article.id}}/user/{{user.id}}">Dislike</a>
+		<a href="/like/article/{{article.id}}/user/{{user.id}}">
+			<img src="{% static 'like.png' %}" width="16" height="16">
+		</a>
+		<a href="/dislike/article/{{article.id}}/user/{{user.id}}">
+			<img src="{% static 'dislike.png' %}" width="16" height="16">
+		</a>
 	</span>
 	{% if user.category == "Write comments" or user.category == "Write articles" %}
 		<h1>Add Comment</h1>
@@ -40,14 +49,22 @@
 			<p>{{i.time_added}}</p>
 			{% if i.author.id == user.id %}
 				<span>
-					<a href="/delete/comment/{{i.id}}/article/{{article.id}}/user/{{user.id}}">Delete</a>
-					<a href="/edit/comment/{{i.id}}/article/{{article.id}}/user/{{user.id}}">Edit</a>
+					<a href="/delete/comment/{{i.id}}/article/{{article.id}}/user/{{user.id}}">
+						<img src="{% static 'delete.png' %}" width="16" height="16">
+					</a>
+					<a href="/edit/comment/{{i.id}}/article/{{article.id}}/user/{{user.id}}">
+						<img src="{% static 'edit.png' %}" width="16" height="16">
+					</a>
 				</span>
 			{% endif %}
 			<br>
 			<span>
-				<a href="/like/comment/{{i.id}}/article/{{article.id}}/user/{{user.id}}">Like</a>
-				<a href="/dislike/comment/{{i.id}}/article/{{article.id}}/user/{{user.id}}">Dislike</a>
+				<a href="/like/comment/{{i.id}}/article/{{article.id}}/user/{{user.id}}">
+					<img src="{% static 'like.png' %}" width="16" height="16">
+				</a>
+				<a href="/dislike/comment/{{i.id}}/article/{{article.id}}/user/{{user.id}}">
+					<img src="{% static 'dislike.png' %}" width="16" height="16">
+				</a>
 			</span>
 			<hr>
 		{% endfor %}
