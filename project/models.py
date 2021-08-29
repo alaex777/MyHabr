@@ -27,3 +27,13 @@ class Comment(models.Model):
 	article = models.ForeignKey(Article, on_delete=models.SET("Deleted user"))
 	likes = models.IntegerField(default=0)
 	dislikes = models.IntegerField(default=0)
+
+class CommentRelationship(models.Model):
+	user = models.ForeignKey(User, on_delete=models.CASCADE)
+	comment = models.ForeignKey(Comment, on_delete=models.CASCADE)
+	category = models.CharField(max_length=16, default="Like")
+
+class ArticleRelationship(models.Model):
+	user = models.ForeignKey(User, on_delete=models.CASCADE)
+	article = models.ForeignKey(Article, on_delete=models.CASCADE)
+	category = models.CharField(max_length=16, default="Like")

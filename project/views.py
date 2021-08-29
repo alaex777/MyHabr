@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.views import View
-from .models import Article, User, Comment
+from .models import Article, User, Comment, CommentRelationship, ArticleRelationship
 from .forms import Login, Register, CreateArticle, CreateComment
 
 # Create your views here.
@@ -70,7 +70,17 @@ def create_article(request, id):
 
 def article(request, id, pk):
 	article = Article.objects.get(pk=id)
+	likes = len(ArticleRelationship.objects.filter(article=article, category="Like"))
+	dislikes = len(ArticleRelationship.objects.filter(article=article, category="Dislike"))
 	user = User.objects.get(pk=pk)
+	article_likes = [i["article"] for i in ArticleRelationship.objects.filter(user=user, category="Like").values("article")]
+	article_dislikes = [i["article"] for i in ArticleRelationship.objects.filter(user=user, category="Dislike").values("article")]
+	comment_likes = [i["comment"] for i in CommentRelationship.objects.filter(user=user, category="Like").values("comment")]
+	comment_dislikes = [i["comment"] for i in CommentRelationship.objects.filter(user=user, category="Dislike").values("comment")]
+	print(article_likes)
+	print(article_dislikes)
+	print(comment_likes)
+	print(comment_dislikes)
 	form = CreateComment(request.POST)
 	try:
 		comments = Comment.objects.filter(article=article)
@@ -81,41 +91,63 @@ def article(request, id, pk):
 			comment = Comment(content=str(form.cleaned_data["content"]), author=user, article=article)
 			comment.save()
 			return redirect("/article/"+str(id)+"/user/"+str(pk))
-	return render(request, "article.html", context={"article": article, "comments": comments, "user": user, "form": form})
+	return render(request, "article.html", 
+		context={"article": article, 
+				"comments": comments, 
+				"user": user, 
+				"form": form, 
+				"likes": likes, 
+				"dislikes": dislikes, 
+				"article_likes": article_likes,
+				"article_dislikes": article_dislikes,
+				"comment_likes": comment_likes,
+				"comment_dislikes": comment_dislikes,})
 
 def like_article(request, id_ar, id_us):
 	article = Article.objects.get(id=id_ar)
+	user = User.objects.get(id=id_us)
 	author = article.author
 	if author != "Deleted user":
 		author.rating += 10
 		author.save()
+		relationship = ArticleRelationship(user=user, article=article, category="Like")
+		relationship.save()
 	address = "/article/" + str(id_ar) + "/user/" + str(id_us)
 	return redirect(address)
 
 def dislike_article(request, id_ar, id_us):
 	article = Article.objects.get(id=id_ar)
+	user = User.objects.get(id=id_us)
 	author = article.author
 	if author != "Deleted user":
 		author.rating -= 10
 		author.save()
+		relationship = ArticleRelationship(user=user, article=article, category="Dislike")
+		relationship.save()
 	address = "/article/" + str(id_ar) + "/user/" + str(id_us)
 	return redirect(address)
 
 def like_comment(request, id_com, id_ar, id_us):
 	comment = Comment.objects.get(id=id_com)
+	user = User.objects.get(id=id_us)
 	author = comment.author
 	if author != "Deleted user":
 		author.rating += 3
 		author.save()
+		relationship = CommentRelationship(user=user, comment=comment, category="Like")
+		relationship.save()
 	address = "/article/" + str(id_ar) + "/user/" + str(id_us)
 	return redirect(address)
 
 def dislike_comment(request, id_com, id_ar, id_us):
 	comment = Comment.objects.get(id=id_com)
+	user = User.objects.get(id=id_us)
 	author = comment.author
 	if author != "Deleted user":
 		author.rating -= 3
 		author.save()
+		relationship = CommentRelationship(user=user, comment=comment, category="Dislike")
+		relationship.save()
 	address = "/article/" + str(id_ar) + "/user/" + str(id_us)
 	return redirect(address)
 

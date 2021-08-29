@@ -26,12 +26,22 @@
 	{% endif %}
 	<h1>Do you like this article?</h1>
 	<span>
-		<a href="/like/article/{{article.id}}/user/{{user.id}}">
-			<img src="{% static 'like.png' %}" width="16" height="16">
-		</a>
-		<a href="/dislike/article/{{article.id}}/user/{{user.id}}">
-			<img src="{% static 'dislike.png' %}" width="16" height="16">
-		</a>
+		{% if article.id not in article_likes %}
+			<a href="/like/article/{{article.id}}/user/{{user.id}}">
+				<img src="{% static 'like.png' %}" width="16" height="16">
+			</a>
+		{% else %}
+			<img src="{% static 'like_colored.png' %}" width="16" height="16">
+		{% endif %}
+		{{ likes }}
+		{% if article.id not in article_dislikes %}
+			<a href="/dislike/article/{{article.id}}/user/{{user.id}}">
+				<img src="{% static 'dislike.png' %}" width="16" height="16">
+			</a>
+		{% else %}
+			<img src="{% static 'dislike_colored.png' %}" width="16" height="16">
+		{% endif %}
+		{{ dislikes }}
 	</span>
 	{% if user.category == "Write comments" or user.category == "Write articles" %}
 		<h1>Add Comment</h1>
@@ -59,12 +69,20 @@
 			{% endif %}
 			<br>
 			<span>
-				<a href="/like/comment/{{i.id}}/article/{{article.id}}/user/{{user.id}}">
-					<img src="{% static 'like.png' %}" width="16" height="16">
-				</a>
-				<a href="/dislike/comment/{{i.id}}/article/{{article.id}}/user/{{user.id}}">
-					<img src="{% static 'dislike.png' %}" width="16" height="16">
-				</a>
+				{% if i.id not in comment_likes %}
+					<a href="/like/comment/{{i.id}}/article/{{article.id}}/user/{{user.id}}">
+						<img src="{% static 'like.png' %}" width="16" height="16">
+					</a>
+				{% else %}
+					<img src="{% static 'like_colored.png' %}" width="16" height="16">
+				{% endif %}
+				{% if i.id not in comment_dislikes %}
+					<a href="/dislike/comment/{{i.id}}/article/{{article.id}}/user/{{user.id}}">
+						<img src="{% static 'dislike.png' %}" width="16" height="16">
+					</a>
+				{% else %}
+					<img src="{% static 'dislike_colored.png' %}" width="16" height="16">
+				{% endif %}
 			</span>
 			<hr>
 		{% endfor %}
