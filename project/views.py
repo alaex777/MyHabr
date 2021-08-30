@@ -77,10 +77,6 @@ def article(request, id, pk):
 	article_dislikes = [i["article"] for i in ArticleRelationship.objects.filter(user=user, category="Dislike").values("article")]
 	comment_likes = [i["comment"] for i in CommentRelationship.objects.filter(user=user, category="Like").values("comment")]
 	comment_dislikes = [i["comment"] for i in CommentRelationship.objects.filter(user=user, category="Dislike").values("comment")]
-	print(article_likes)
-	print(article_dislikes)
-	print(comment_likes)
-	print(comment_dislikes)
 	form = CreateComment(request.POST)
 	try:
 		comments = Comment.objects.filter(article=article)
@@ -103,15 +99,24 @@ def article(request, id, pk):
 				"comment_likes": comment_likes,
 				"comment_dislikes": comment_dislikes,})
 
+# create likes and dislikes on comments and articles
+
 def like_article(request, id_ar, id_us):
 	article = Article.objects.get(id=id_ar)
 	user = User.objects.get(id=id_us)
 	author = article.author
-	if author != "Deleted user":
-		author.rating += 10
-		author.save()
+	if not ArticleRelationship.objects.filter(user=user, article=article, category="Like"):
+		if author != "Deleted user":
+			author.rating += 10
+			author.save()
 		relationship = ArticleRelationship(user=user, article=article, category="Like")
 		relationship.save()
+	else:
+		if author != "Deleted user":
+			author.rating -= 10
+			author.save()
+		relationship = ArticleRelationship.objects.filter(user=user, article=article, category="Like")
+		relationship.delete()
 	address = "/article/" + str(id_ar) + "/user/" + str(id_us)
 	return redirect(address)
 
@@ -119,11 +124,18 @@ def dislike_article(request, id_ar, id_us):
 	article = Article.objects.get(id=id_ar)
 	user = User.objects.get(id=id_us)
 	author = article.author
-	if author != "Deleted user":
-		author.rating -= 10
-		author.save()
+	if not ArticleRelationship.objects.filter(user=user, article=article, category="Dislike"):
+		if author != "Deleted user":
+			author.rating -= 10
+			author.save()
 		relationship = ArticleRelationship(user=user, article=article, category="Dislike")
 		relationship.save()
+	else:
+		if author != "Deleted user":
+			author.rating += 10
+			author.save()
+		relationship = ArticleRelationship.objects.filter(user=user, article=article, category="Dislike")
+		relationship.delete()
 	address = "/article/" + str(id_ar) + "/user/" + str(id_us)
 	return redirect(address)
 
@@ -131,11 +143,18 @@ def like_comment(request, id_com, id_ar, id_us):
 	comment = Comment.objects.get(id=id_com)
 	user = User.objects.get(id=id_us)
 	author = comment.author
-	if author != "Deleted user":
-		author.rating += 3
-		author.save()
+	if not CommentRelationship.objects.filter(user=user, comment=comment, category="Like"):
+		if author != "Deleted user":
+			author.rating += 3
+			author.save()
 		relationship = CommentRelationship(user=user, comment=comment, category="Like")
 		relationship.save()
+	else:
+		if author != "Deleted user":
+			author.rating -= 3
+			author.save()
+		relationship = CommentRelationship.objects.filter(user=user, comment=comment, category="Like")
+		relationship.delete()
 	address = "/article/" + str(id_ar) + "/user/" + str(id_us)
 	return redirect(address)
 
@@ -143,13 +162,22 @@ def dislike_comment(request, id_com, id_ar, id_us):
 	comment = Comment.objects.get(id=id_com)
 	user = User.objects.get(id=id_us)
 	author = comment.author
-	if author != "Deleted user":
-		author.rating -= 3
-		author.save()
+	if not CommentRelationship.objects.filter(user=user, comment=comment, category="Dislike"):
+		if author != "Deleted user":
+			author.rating -= 3
+			author.save()
 		relationship = CommentRelationship(user=user, comment=comment, category="Dislike")
 		relationship.save()
+	else:
+		if author != "Deleted user":
+			author.rating += 3
+			author.save()
+		relationship = CommentRelationship.objects.filter(user=user, comment=comment, category="Dislike")
+		relationship.delete()
 	address = "/article/" + str(id_ar) + "/user/" + str(id_us)
 	return redirect(address)
+
+# edit and delete comments and articles
 
 def edit_comment(request, id_com, id_ar, id_us):
 	comment = Comment.objects.get(id=id_com)

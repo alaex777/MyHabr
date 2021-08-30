@@ -31,7 +31,9 @@
 				<img src="{% static 'like.png' %}" width="16" height="16">
 			</a>
 		{% else %}
-			<img src="{% static 'like_colored.png' %}" width="16" height="16">
+			<a href="/like/article/{{article.id}}/user/{{user.id}}">
+				<img src="{% static 'like_colored.png' %}" width="16" height="16">
+			</a>
 		{% endif %}
 		{{ likes }}
 		{% if article.id not in article_dislikes %}
@@ -39,7 +41,9 @@
 				<img src="{% static 'dislike.png' %}" width="16" height="16">
 			</a>
 		{% else %}
-			<img src="{% static 'dislike_colored.png' %}" width="16" height="16">
+			<a href="/dislike/article/{{article.id}}/user/{{user.id}}">
+				<img src="{% static 'dislike_colored.png' %}" width="16" height="16">
+			</a>
 		{% endif %}
 		{{ dislikes }}
 	</span>
@@ -74,14 +78,18 @@
 						<img src="{% static 'like.png' %}" width="16" height="16">
 					</a>
 				{% else %}
-					<img src="{% static 'like_colored.png' %}" width="16" height="16">
+					<a href="/like/comment/{{i.id}}/article/{{article.id}}/user/{{user.id}}">
+						<img src="{% static 'like_colored.png' %}" width="16" height="16">
+					</a>
 				{% endif %}
 				{% if i.id not in comment_dislikes %}
 					<a href="/dislike/comment/{{i.id}}/article/{{article.id}}/user/{{user.id}}">
 						<img src="{% static 'dislike.png' %}" width="16" height="16">
 					</a>
 				{% else %}
-					<img src="{% static 'dislike_colored.png' %}" width="16" height="16">
+					<a href="/dislike/comment/{{i.id}}/article/{{article.id}}/user/{{user.id}}">
+						<img src="{% static 'dislike_colored.png' %}" width="16" height="16">
+					</a>
 				{% endif %}
 			</span>
 			<hr>
